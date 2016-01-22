@@ -28,10 +28,10 @@ def main():
 
 def _generatePlan():
     start_date = raw_input('Start date: ')
-    start_date = datetime.strptime(start_date, date_format).date()
+    start_date = parseDate(start_date)
 
     end_date = raw_input('End date: ')
-    end_date = datetime.strptime(end_date, date_format).date()
+    end_date = parseDate(end_date)
 
     generatePlan(start_date, end_date)
 
@@ -96,7 +96,7 @@ def parseHistoryToDict():
     with open(history_recode_file) as f:
         for line in f:
             date = line.split(':')[0]
-            date = datetime.strptime(date, date_format).date()
+            date = parseDate(date)
             lessonList = line.split(':')[1]
             lessonList = [int(k) for k in lessonList.split(',')]
             history_dict[date] = lessonList
@@ -112,7 +112,7 @@ def _addHistoryRecords():
         date = raw_input('Date: ')
         if not date:
             break
-        date = datetime.strptime(date, date_format).date()
+        date = parseDate(date)
         lessonList = raw_input('Lesson(s): ')
         lessonList = [int(k) for k in lessonList.split(',')]
         # lessonList = list(eval(lessonList))
@@ -171,6 +171,19 @@ def writePlan(start_date, end_date, learn_dict, review_dict):
         s = ''.join(s)
         print s
         # print , "review", review_dict[x]
+
+def parseDate(_date):
+    if 'today' in _date.lower():
+        ret = date.today()
+
+        if len(_date.split('-')) > 1:
+            ret -= timedelta(int(_date.split('-')[1]))
+        elif len(_date.split('+')) > 1:
+            ret += timedelta(int(_date.split('+')[1]))
+
+        return ret
+    else:
+        return datetime.strptime(_date, date_format).date()
 
 # addHistoryRecord(date.today(), [123, 124])
 # generatePlan(date(2016, 01, 20), date(2016, 02, 10))
