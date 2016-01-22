@@ -5,7 +5,7 @@ from datetime import date, timedelta, datetime
 import collections
 import sys
 
-history_dict = {date(2016, 01, 20): [394], date(2016, 01, 21): [395]}
+# history_dict = {date(2016, 01, 20): [394], date(2016, 01, 21): [395]}
 # date_format = "%B %d, %Y"
 date_format = "%Y-%m-%d"
 learn_start_date = date(2100, 01, 20)
@@ -18,8 +18,7 @@ lesson_seperator = ','
 # print x, ':', history_dict[x]
 
 def generatePlan(start_date, end_date):
-    # history_dict = parseHistoryToDict()
-
+    history_dict = parseHistoryToDict()
     scanHistoryDict(history_dict)
 
     learn_dict = history_dict
@@ -73,7 +72,20 @@ def isHoliday(date):
     return date.isoweekday() == 6 or date.isoweekday() == 7
 
 
-# def parseHistoryToDict(filepath):
+def parseHistoryToDict():
+    history_dict = {}
+
+    with open(history_recode_file) as f:
+        for line in f:
+            date = line.split(':')[0]
+            date = datetime.strptime(date, date_format).date()
+            lessonList = line.split(':')[1]
+            lessonList = [int(k) for k in lessonList.split(',')]
+            history_dict[date] = lessonList
+
+    history_dict = collections.OrderedDict(sorted(history_dict.items()))
+    return history_dict
+
 
 def addHistoryRecords():
     file = open(history_recode_file, "a")
@@ -99,7 +111,7 @@ def addHistoryRecord(date, lessonList, file):
     # file.close()
 
 
-def scanHistoryDict(hisotry_dict):
+def scanHistoryDict(history_dict):
     global pre_lesson, learn_start_date, learn_end_date
 
     for x in history_dict:
@@ -143,5 +155,6 @@ def writePlan(start_date, end_date, learn_dict, review_dict):
         # print , "review", review_dict[x]
 
 # addHistoryRecord(date.today(), [123, 124])
-# generatePlan(date(2016, 01, 25), date(2016, 02, 10))
-addHistoryRecords()
+generatePlan(date(2016, 01, 20), date(2016, 02, 10))
+# addHistoryRecords()
+# print parseHistoryToDict()
