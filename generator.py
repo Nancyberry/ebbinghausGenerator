@@ -7,15 +7,23 @@ import collections
 history_dict = {date(2016, 01, 20): [394], date(2016, 01, 21): [395]}
 # date_format = "%B %d, %Y"
 date_format = "%Y-%m-%d"
+learn_start_date = date(2100, 01, 20)
+learn_end_date = date(2000, 01, 20)
+pre_lesson = 000
 
 # for x in history_dict:
 # print x, ':', history_dict[x]
 
 def generatePlan(start_date, end_date):
-    new_lesson = 396
+    # history_dict = parseHistoryToDict()
+
+    scanHistoryDict(history_dict)
+
+
     learn_dict = history_dict
     review_dict = {}
     intervals = [1, 2, 4, 7, 15]
+    global pre_lesson
 
     for date in daterange(start_date, end_date):
         # date = date(2016, 01, 20) + datetime.timedelta(days=x)
@@ -24,9 +32,9 @@ def generatePlan(start_date, end_date):
         if not learn_dict.has_key(date) and not isHoliday(date):
             # print "history[", review_date, "]: ", new_lesson
             learn_dict[date] = list()
-            learn_dict[date].append(new_lesson)
+            learn_dict[date].append(pre_lesson + 1)
             # review_dict[review_date].append(new_lesson)
-            new_lesson += 1
+            pre_lesson += 1
 
         if not learn_dict.has_key(date):
             continue
@@ -85,5 +93,23 @@ def isHoliday(date):
     # print date, date.isoweekday()
     return date.isoweekday() == 6 or date.isoweekday() == 7
 
+# def parseHistoryToDict(filepath):
+
+
+def scanHistoryDict(hisotry_dict):
+    global pre_lesson, learn_start_date, learn_end_date
+
+    for x in history_dict:
+        if x < learn_start_date:
+            learn_start_date = x
+
+        if x > learn_end_date:
+            learn_end_date = x
+
+        if pre_lesson < max(history_dict[x]):
+            pre_lesson = max(history_dict[x])
+
+    print learn_start_date, learn_end_date, pre_lesson
+    print "------------------------"
 
 generatePlan(date(2016, 01, 20), date(2016, 02, 20))
