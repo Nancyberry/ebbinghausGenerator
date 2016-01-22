@@ -14,9 +14,6 @@ pre_lesson = 000
 history_recode_file = "history.txt"
 lesson_seperator = ','
 
-# for x in history_dict:
-# print x, ':', history_dict[x]
-
 def main():
     # read command line arguments
     for arg in sys.argv[1:]:
@@ -45,14 +42,11 @@ def generatePlan(start_date, end_date):
     global pre_lesson
 
     for date in daterange(learn_start_date, end_date):
-        # date = date(2016, 01, 20) + datetime.timedelta(days=x)
-        # print "x is" , learn_dict.keys()[0], ",history date is ", date
         # add new lesson if needed
         if not learn_dict.has_key(date) and not isHoliday(date):
             # print "history[", review_date, "]: ", new_lesson
             learn_dict[date] = list()
             learn_dict[date].append(pre_lesson + 1)
-            # review_dict[review_date].append(new_lesson)
             pre_lesson += 1
 
         if not learn_dict.has_key(date):
@@ -61,17 +55,9 @@ def generatePlan(start_date, end_date):
         # add review dates
         for y in intervals:
             review_date = date + timedelta(days=y)
-            # print "review_date: " , review_date, " history_date", date
             if not review_dict.has_key(review_date):
                 review_dict[review_date] = list()
-                # if not learn_dict.has_key(review_date) and not isHoliday(review_date):
-                # # print "history[", review_date, "]: ", new_lesson
-                # learn_dict[review_date] = {new_lesson}
-                # # review_dict[review_date].append(new_lesson)
-                # new_lesson += 1
-
             review_dict[review_date].extend(learn_dict[date])
-            # print review_date, "review", review_dict[review_date]
 
     # sort dict by key
     learn_dict = collections.OrderedDict(sorted(learn_dict.items()))
@@ -86,7 +72,6 @@ def daterange(start_date, end_date):
 
 
 def isHoliday(date):
-    # print date, date.isoweekday()
     return date.isoweekday() == 6 or date.isoweekday() == 7
 
 
@@ -121,12 +106,10 @@ def _addHistoryRecords():
     file.close()
 
 def addHistoryRecord(date, lessonList, file):
-    # file = open(history_recode_file, "a")
     file.write(date.strftime(date_format))
     file.write(':')
     file.write(','.join(str(x) for x in lessonList))
     file.write('\n')
-    # file.close()
 
 
 def scanHistoryDict(history_dict):
@@ -142,8 +125,7 @@ def scanHistoryDict(history_dict):
         if pre_lesson < max(history_dict[x]):
             pre_lesson = max(history_dict[x])
 
-    print learn_start_date, learn_end_date, pre_lesson
-    print "------------------------"
+    print "------------- Ebbinghaus Plan -------------"
 
 
 def writePlan(start_date, end_date, learn_dict, review_dict):
