@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 _version_ = "0.1"
 
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 import collections
+import sys
 
 history_dict = {date(2016, 01, 20): [394], date(2016, 01, 21): [395]}
 # date_format = "%B %d, %Y"
@@ -10,6 +11,8 @@ date_format = "%Y-%m-%d"
 learn_start_date = date(2100, 01, 20)
 learn_end_date = date(2000, 01, 20)
 pre_lesson = 000
+history_recode_file = "history.txt"
+lesson_seperator = ','
 
 # for x in history_dict:
 # print x, ':', history_dict[x]
@@ -18,7 +21,6 @@ def generatePlan(start_date, end_date):
     # history_dict = parseHistoryToDict()
 
     scanHistoryDict(history_dict)
-
 
     learn_dict = history_dict
     review_dict = {}
@@ -60,6 +62,7 @@ def generatePlan(start_date, end_date):
 
     writePlan(start_date, end_date, learn_dict, review_dict)
 
+
 def daterange(start_date, end_date):
     for n in range(int((end_date - start_date).days)):
         yield start_date + timedelta(n)
@@ -69,7 +72,31 @@ def isHoliday(date):
     # print date, date.isoweekday()
     return date.isoweekday() == 6 or date.isoweekday() == 7
 
+
 # def parseHistoryToDict(filepath):
+
+def addHistoryRecords():
+    file = open(history_recode_file, "a")
+
+    while True:
+        date = raw_input('Date: ')
+        if not date:
+            break
+        date = datetime.strptime(date, date_format).date()
+        lessonList = raw_input('Lesson(s): ')
+        lessonList = [int(k) for k in lessonList.split(',')]
+        # lessonList = list(eval(lessonList))
+        addHistoryRecord(date, lessonList, file)
+
+    file.close()
+
+def addHistoryRecord(date, lessonList, file):
+    # file = open(history_recode_file, "a")
+    file.write(date.strftime(date_format))
+    file.write(':')
+    file.write(','.join(str(x) for x in lessonList))
+    file.write('\n')
+    # file.close()
 
 
 def scanHistoryDict(hisotry_dict):
@@ -87,6 +114,7 @@ def scanHistoryDict(hisotry_dict):
 
     print learn_start_date, learn_end_date, pre_lesson
     print "------------------------"
+
 
 def writePlan(start_date, end_date, learn_dict, review_dict):
     for date in daterange(start_date, end_date):
@@ -106,7 +134,7 @@ def writePlan(start_date, end_date, learn_dict, review_dict):
         else:
             s.append(", review ***")
         # if learn_dict.has_key(date):
-        #     s = str(x), " learn", learn_dict[date]
+        # s = str(x), " learn", learn_dict[date]
         #
         # if review_dict.has_key(x):
         #     s += "review", review_dict[x]
@@ -114,5 +142,6 @@ def writePlan(start_date, end_date, learn_dict, review_dict):
         print s
         # print , "review", review_dict[x]
 
-
-generatePlan(date(2016, 01, 25), date(2016, 02, 10))
+# addHistoryRecord(date.today(), [123, 124])
+# generatePlan(date(2016, 01, 25), date(2016, 02, 10))
+addHistoryRecords()
