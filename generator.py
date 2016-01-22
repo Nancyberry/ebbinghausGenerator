@@ -5,6 +5,8 @@ from datetime import date, timedelta
 import collections
 
 history_dict = {date(2016, 01, 20): [394], date(2016, 01, 21): [395]}
+# date_format = "%B %d, %Y"
+date_format = "%Y-%m-%d"
 
 # for x in history_dict:
 # print x, ':', history_dict[x]
@@ -48,10 +50,28 @@ def generatePlan(start_date, end_date):
     learn_dict = collections.OrderedDict(sorted(learn_dict.items()))
     review_dict = collections.OrderedDict(sorted(review_dict.items()))
 
-    for x in learn_dict:
-        s = str(x), " learn", learn_dict[x]
-        if review_dict.has_key(x):
-            s += "review", review_dict[x]
+    for date in daterange(start_date, end_date):
+        s = []
+        s.append(date.strftime(date_format))
+        s.append(' ')
+
+        if learn_dict.has_key(date):
+            s.append("learn ")
+            s.append(', '.join(str(x) for x in learn_dict[date]))
+        else:
+            s.append("learn ***")
+
+        if review_dict.has_key(date):
+            s.append(", review ")
+            s.append(', '.join(str(x) for x in review_dict[date]))
+        else:
+            s.append(", review ***")
+        # if learn_dict.has_key(date):
+        #     s = str(x), " learn", learn_dict[date]
+        #
+        # if review_dict.has_key(x):
+        #     s += "review", review_dict[x]
+        s = ''.join(s)
         print s
         # print , "review", review_dict[x]
 
@@ -66,4 +86,4 @@ def isHoliday(date):
     return date.isoweekday() == 6 or date.isoweekday() == 7
 
 
-generatePlan(date(2016, 01, 22), date(2016, 02, 20))
+generatePlan(date(2016, 01, 20), date(2016, 02, 20))
