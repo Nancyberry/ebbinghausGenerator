@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-_version_ = "0.1"
+__version__ = "0.1"
 
 from datetime import date, timedelta, datetime
 import collections
@@ -16,6 +16,24 @@ lesson_seperator = ','
 
 # for x in history_dict:
 # print x, ':', history_dict[x]
+
+def main():
+    # read command line arguments
+    for arg in sys.argv[1:]:
+        # print arg
+        if ('a' == arg):
+            _addHistoryRecords()
+        elif ('g' == arg):
+            _generatePlan()
+
+def _generatePlan():
+    start_date = raw_input('Start date: ')
+    start_date = datetime.strptime(start_date, date_format).date()
+
+    end_date = raw_input('End date: ')
+    end_date = datetime.strptime(end_date, date_format).date()
+
+    generatePlan(start_date, end_date)
 
 def generatePlan(start_date, end_date):
     history_dict = parseHistoryToDict()
@@ -87,7 +105,7 @@ def parseHistoryToDict():
     return history_dict
 
 
-def addHistoryRecords():
+def _addHistoryRecords():
     file = open(history_recode_file, "a")
 
     while True:
@@ -155,6 +173,10 @@ def writePlan(start_date, end_date, learn_dict, review_dict):
         # print , "review", review_dict[x]
 
 # addHistoryRecord(date.today(), [123, 124])
-generatePlan(date(2016, 01, 20), date(2016, 02, 10))
-# addHistoryRecords()
+# generatePlan(date(2016, 01, 20), date(2016, 02, 10))
+# _addHistoryRecords()
 # print parseHistoryToDict()
+
+# must locate at the end???
+if __name__ == "__main__":
+    main()
