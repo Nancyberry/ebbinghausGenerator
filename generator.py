@@ -25,7 +25,7 @@ def generatePlan(start_date, end_date):
     intervals = [1, 2, 4, 7, 15]
     global pre_lesson
 
-    for date in daterange(start_date, end_date):
+    for date in daterange(learn_start_date, end_date):
         # date = date(2016, 01, 20) + datetime.timedelta(days=x)
         # print "x is" , learn_dict.keys()[0], ",history date is ", date
         # add new lesson if needed
@@ -58,31 +58,7 @@ def generatePlan(start_date, end_date):
     learn_dict = collections.OrderedDict(sorted(learn_dict.items()))
     review_dict = collections.OrderedDict(sorted(review_dict.items()))
 
-    for date in daterange(start_date, end_date):
-        s = []
-        s.append(date.strftime(date_format))
-        s.append(' ')
-
-        if learn_dict.has_key(date):
-            s.append("learn ")
-            s.append(', '.join(str(x) for x in learn_dict[date]))
-        else:
-            s.append("learn ***")
-
-        if review_dict.has_key(date):
-            s.append(", review ")
-            s.append(', '.join(str(x) for x in review_dict[date]))
-        else:
-            s.append(", review ***")
-        # if learn_dict.has_key(date):
-        #     s = str(x), " learn", learn_dict[date]
-        #
-        # if review_dict.has_key(x):
-        #     s += "review", review_dict[x]
-        s = ''.join(s)
-        print s
-        # print , "review", review_dict[x]
-
+    writePlan(start_date, end_date, learn_dict, review_dict)
 
 def daterange(start_date, end_date):
     for n in range(int((end_date - start_date).days)):
@@ -112,4 +88,31 @@ def scanHistoryDict(hisotry_dict):
     print learn_start_date, learn_end_date, pre_lesson
     print "------------------------"
 
-generatePlan(date(2016, 01, 20), date(2016, 02, 20))
+def writePlan(start_date, end_date, learn_dict, review_dict):
+    for date in daterange(start_date, end_date):
+        s = []
+        s.append(date.strftime(date_format))
+        s.append(' ')
+
+        if learn_dict.has_key(date):
+            s.append("learn ")
+            s.append(', '.join(str(x) for x in learn_dict[date]))
+        else:
+            s.append("learn ***")
+
+        if review_dict.has_key(date):
+            s.append(", review ")
+            s.append(', '.join(str(x) for x in review_dict[date]))
+        else:
+            s.append(", review ***")
+        # if learn_dict.has_key(date):
+        #     s = str(x), " learn", learn_dict[date]
+        #
+        # if review_dict.has_key(x):
+        #     s += "review", review_dict[x]
+        s = ''.join(s)
+        print s
+        # print , "review", review_dict[x]
+
+
+generatePlan(date(2016, 01, 25), date(2016, 02, 10))
