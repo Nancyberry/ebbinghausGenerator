@@ -5,9 +5,6 @@ import datetime, collections
 
 history_dict = {datetime.date(2016, 01, 20): [394], datetime.date(2016, 01, 21): [395]}
 
-print datetime.datetime.today()
-print datetime.datetime.today().isoweekday()
-
 # for x in history_dict:
 # print x, ':', history_dict[x]
 
@@ -15,7 +12,7 @@ def generatePlan(start, end):
     new_lesson = 396
     learn_dict = history_dict
     review_dict = {}
-    intervals = [1, 3, 6]
+    intervals = [1, 2, 4, 7, 15]
 
     for x in range(start, end):
         date = datetime.date(2016, 01, 20) + datetime.timedelta(days=x)
@@ -59,8 +56,8 @@ def generatePlan(start, end):
 
 
 def isHoliday(date):
-    print date, date.isoweekday()
+    # print date, date.isoweekday()
     return date.isoweekday() == 6 or date.isoweekday() == 7
 
 
-generatePlan(0, 10)
+generatePlan(0, 50)
