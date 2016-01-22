@@ -1,21 +1,22 @@
 #!/usr/bin/env python
 _version_ = "0.1"
 
-import datetime, collections
+from datetime import date, timedelta
+import collections
 
-history_dict = {datetime.date(2016, 01, 20): [394], datetime.date(2016, 01, 21): [395]}
+history_dict = {date(2016, 01, 20): [394], date(2016, 01, 21): [395]}
 
 # for x in history_dict:
 # print x, ':', history_dict[x]
 
-def generatePlan(start, end):
+def generatePlan(start_date, end_date):
     new_lesson = 396
     learn_dict = history_dict
     review_dict = {}
     intervals = [1, 2, 4, 7, 15]
 
-    for x in range(start, end):
-        date = datetime.date(2016, 01, 20) + datetime.timedelta(days=x)
+    for date in daterange(start_date, end_date):
+        # date = date(2016, 01, 20) + datetime.timedelta(days=x)
         # print "x is" , learn_dict.keys()[0], ",history date is ", date
         # add new lesson if needed
         if not learn_dict.has_key(date) and not isHoliday(date):
@@ -30,15 +31,15 @@ def generatePlan(start, end):
 
         # add review dates
         for y in intervals:
-            review_date = date + datetime.timedelta(days=y)
+            review_date = date + timedelta(days=y)
             # print "review_date: " , review_date, " history_date", date
             if not review_dict.has_key(review_date):
                 review_dict[review_date] = list()
                 # if not learn_dict.has_key(review_date) and not isHoliday(review_date):
-                #     # print "history[", review_date, "]: ", new_lesson
-                #     learn_dict[review_date] = {new_lesson}
-                #     # review_dict[review_date].append(new_lesson)
-                #     new_lesson += 1
+                # # print "history[", review_date, "]: ", new_lesson
+                # learn_dict[review_date] = {new_lesson}
+                # # review_dict[review_date].append(new_lesson)
+                # new_lesson += 1
 
             review_dict[review_date].extend(learn_dict[date])
             # print review_date, "review", review_dict[review_date]
@@ -48,11 +49,16 @@ def generatePlan(start, end):
     review_dict = collections.OrderedDict(sorted(review_dict.items()))
 
     for x in learn_dict:
-        s = str(x) , " learn" , learn_dict[x]
+        s = str(x), " learn", learn_dict[x]
         if review_dict.has_key(x):
             s += "review", review_dict[x]
         print s
         # print , "review", review_dict[x]
+
+
+def daterange(start_date, end_date):
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + timedelta(n)
 
 
 def isHoliday(date):
@@ -60,4 +66,4 @@ def isHoliday(date):
     return date.isoweekday() == 6 or date.isoweekday() == 7
 
 
-generatePlan(0, 50)
+generatePlan(date(2016, 01, 22), date(2016, 02, 20))
