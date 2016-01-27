@@ -42,8 +42,8 @@ def generatePlan(start_date, end_date):
     global pre_lesson
 
     for date in daterange(learn_start_date, end_date):
-        # add new lesson if needed
-        if not learn_dict.has_key(date) and not isHoliday(date):
+        # add new lesson if needed, don't change past days
+        if date > learn_end_date and not isHoliday(date):
             # print "history[", review_date, "]: ", new_lesson
             learn_dict[date] = list()
             learn_dict[date].append(pre_lesson + 1)
